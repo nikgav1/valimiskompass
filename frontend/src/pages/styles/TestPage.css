@@ -1,0 +1,67 @@
+.test-variants {
+  display: flex;
+  gap: 0;
+  border: 5px solid #111;
+  border-radius: 8px;
+  overflow: hidden;
+  width: min(900px, 100%);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  box-sizing: border-box;
+}
+
+.variant-btn {
+  flex: 1 1 0;
+  padding: 18px 12px;
+  background: transparent;
+  border: 0;
+  border-left: 5px solid #111;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.variant-btn:first-child {
+  border-left: 0;
+}
+
+.variant-btn:hover,
+.variant-btn:focus {
+  background: rgba(0, 0, 0, 0.03);
+  outline: none;
+}
+
+.variant-btn:focus-visible {
+  outline: 3px solid rgba(0, 120, 255, 0.25);
+  outline-offset: -3px;
+}
+
+.variant-btn.selected {
+  background: #0035e4;
+  color: #fff;
+}
+
+/* progress bar */
+.bar-container {
+  height: 8px;
+  width: 100%;
+  background-color: #eee;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.bar-fill {
+  height: 100%;
+  background: blue;
+  transition: width 300ms ease;
+  width: 0;
+}
+
+@media (max-width: 420px) {
+  .variant-btn {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+}
