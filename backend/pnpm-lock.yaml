@@ -17,6 +17,9 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.1.0
+      express-oauth2-jwt-bearer:
+        specifier: ^1.7.1
+        version: 1.7.1
       mongoose:
         specifier: ^8.18.2
         version: 8.18.2
@@ -248,6 +251,10 @@ packages:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
 
+  express-oauth2-jwt-bearer@1.7.1:
+    resolution: {integrity: sha512-IYwLHW9bysGnASwFfXqEZ2aJzY2g4B9P36sWgeIkSqWh1SjeIc8mfoeNsBpzil/lhXNWuttPH0rWQ6norZUBIg==}
+    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0 || ^18.12.0 || ^20.2.0 || ^22.1.0 || ^24.0.0}
+
   express@5.1.0:
     resolution: {integrity: sha512-DT9ck5YIRU+8GYzzU5kT3eHGA5iL+1Zd0EutOmTE9Dtk+Tvuzd23VBU+ec7HPNSTxXYO55gPV/hq4pSBJDjFpA==}
     engines: {node: '>= 18'}
@@ -344,6 +351,9 @@ packages:
 
   is-promise@4.0.0:
     resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
+
+  jose@4.15.9:
+    resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
 
   kareem@2.6.3:
     resolution: {integrity: sha512-C3iHfuGUXK2u8/ipq9LfjFfXFxAZMQJJq7vLS45r3D9Y2xQ/m4S8zaR4zMLFWh9AsNPXmcFfUDhTEO8UIC/V6Q==}
@@ -830,6 +840,10 @@ snapshots:
 
   etag@1.8.1: {}
 
+  express-oauth2-jwt-bearer@1.7.1:
+    dependencies:
+      jose: 4.15.9
+
   express@5.1.0:
     dependencies:
       accepts: 2.0.0
@@ -953,6 +967,8 @@ snapshots:
   is-number@7.0.0: {}
 
   is-promise@4.0.0: {}
+
+  jose@4.15.9: {}
 
   kareem@2.6.3: {}
 
