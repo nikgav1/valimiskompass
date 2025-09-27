@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"cd backend && pnpm run dev\" \"cd frontend && pnpm run dev\""
+    "dev": "concurrently \"cd backend && pnpm run dev\" \"cd frontend && pnpm run dev\"",
+    "build:wasm": "cd wasm && wasm-pack build --target nodejs --release"
   },
   "keywords": [],
   "author": "",

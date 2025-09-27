@@ -1,1 +1,18 @@
 node_modules
+# --- Rust WASM build outputs ---
+wasm/pkg/
+wasm/target/
+wasm/Cargo.lock
+
+# If you ever use wasm-bindgen test output
+wasm/tests/wasm-pack-test*
+
+# --- Rust-specific general ignores ---
+**/*.rs.bk
+**/*.rs.old
+
+# --- Mac / Linux / Editor noise ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

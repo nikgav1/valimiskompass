@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { computeMatchesFromJson } from "../services/matcher";
-import politicians from "../../politicians.json";
+import { POLITICIANS_JSON } from "../server";
 import { checkJwt } from "../middlewares/auth";
 import User from "../models/User";
+import wasm from '../../../wasm/pkg';
 
 type PoliticianMatch = {
   party: string;
@@ -15,13 +15,24 @@ type MatchResult = Record<string, PoliticianMatch>;
 
 const apiRouter = Router();
 
-apiRouter.post("/evaluate", (req, res) => {
+apiRouter.post('/evaluate', async (req, res) => {
   try {
     const answers: number[] = req.body.answers;
-    const results: MatchResult = computeMatchesFromJson(answers, politicians);
+
+    if (!Array.isArray(answers)) {
+      return res.status(400).json({ message: 'answers must be an array' });
+    }
+
+    // call wasm function — it expects stringified JSON and returns stringified JSON
+    const answersJson = JSON.stringify(answers);
+
+    const resultJson = wasm.compute_matches(answersJson, POLITICIANS_JSON, 15);
+    const results = JSON.parse(resultJson);
+
     res.status(200).json(results);
   } catch (err) {
-    res.status(500).json({ message: "Could not evaluate politicians!" });
+    console.error('evaluate error:', err);
+    res.status(500).json({ message: 'Could not evaluate politicians!', error: String(err) });
   }
 });
 

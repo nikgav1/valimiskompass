@@ -1,5 +1,6 @@
 import config from "./config/config";
 import mongoose from "mongoose";
+import politicians from "../politicians.json";
 import app from "./app";
 
 (async () => {
@@ -13,3 +14,5 @@ import app from "./app";
     process.exit(1)
   }
 })();
+
+export const POLITICIANS_JSON = JSON.stringify(politicians);
