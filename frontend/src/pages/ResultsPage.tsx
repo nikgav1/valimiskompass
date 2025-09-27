@@ -3,19 +3,30 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useState } from "react";
 import axios from "axios";
 
-type ResultShape = Record<string, number | null> | null | undefined;
+type PoliticianMatch = {
+  party: string;
+  name: string;
+  candidateNumber: string;
+  percent: number | null;
+};
+
+type ResultShape = PoliticianMatch[] | Record<string, PoliticianMatch> | null | undefined;
 
 export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { loginWithPopup, isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0()
+  const { loginWithPopup, isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const result = (location.state as { result?: ResultShape } | null)?.result;
+  const raw = (location.state as { result?: ResultShape } | null)?.result;
+  const resultArray: PoliticianMatch[] | undefined = Array.isArray(raw)
+    ? raw
+    : raw
+    ? Object.values(raw)
+    : undefined;
 
-  // If there is no result in state, tell the user to take the test first
-  if (!result || Object.keys(result).length === 0) {
+  if (!resultArray || resultArray.length === 0) {
     return (
       <div style={{ padding: 20 }}>
         <h1>Sa pead tegema testi esiteks!</h1>
@@ -28,17 +39,16 @@ export default function ResultsPage() {
     );
   }
 
-  // Convert to entries and sort by percent desc
-  const sorted = Object.entries(result).sort((a, b) => {
-    const va = typeof a[1] === "number" ? (a[1] as number) : -Infinity;
-    const vb = typeof b[1] === "number" ? (b[1] as number) : -Infinity;
+  const sorted = [...resultArray].sort((a, b) => {
+    const va = typeof a.percent === "number" && Number.isFinite(a.percent) ? a.percent : -Infinity;
+    const vb = typeof b.percent === "number" && Number.isFinite(b.percent) ? b.percent : -Infinity;
     return vb - va;
   });
 
   async function signUpAndSave() {
     setError(null);
     setIsSaving(true);
-    let token = ''
+    let token = "";
 
     try {
       if (!isAuthenticated) {
@@ -47,31 +57,32 @@ export default function ResultsPage() {
       try {
         token = await getAccessTokenSilently({ authorizationParams: { audience: import.meta.env.VITE_AUDIENCE }});
       } catch (error) {
-        const popUpToken = await getAccessTokenWithPopup({ authorizationParams: { audience: import.meta.env.VITE_AUDIENCE }})
-        if (popUpToken){
-          token = popUpToken
-        };
+        const popUpToken = await getAccessTokenWithPopup({ authorizationParams: { audience: import.meta.env.VITE_AUDIENCE }});
+        if (popUpToken) {
+          token = popUpToken as string;
+        }
       }
-      
+
+      const payload = { result: sorted };
+
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/results`, 
-        { result },
+        `${import.meta.env.VITE_BACKEND_URL}/api/results`,
+        payload,
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
       if (response.status !== 200) {
-        throw new Error('Failed to save results');
+        throw new Error("Failed to save results");
       }
 
-      navigate('/saved-results');
-
+      navigate("/results/" + response.data.resultId);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsSaving(false);
     }
@@ -80,18 +91,17 @@ export default function ResultsPage() {
   return (
     <div style={{ padding: 20 }}>
       <h1>Resultaat</h1>
-      {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
+      {error && <div style={{ color: "red", marginBottom: 10 }}>{error}</div>}
       <p>Top matches (sorted by percent):</p>
 
       <div style={{ display: "grid", gap: 8 }}>
-        {sorted.map(([name, percent]) => {
-          const percentText =
-            typeof percent === "number" && Number.isFinite(percent)
-              ? `${percent.toFixed(2)}%`
-              : "N/A";
+        {sorted.map((match, idx) => {
+          const percent = match?.percent;
+          const percentText = typeof percent === "number" && Number.isFinite(percent) ? `${percent.toFixed(2)}%` : "N/A";
+          const key = match.candidateNumber || `${match.name}_${idx}`;
           return (
             <div
-              key={name}
+              key={key}
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -102,7 +112,12 @@ export default function ResultsPage() {
                 background: "#fff",
               }}
             >
-              <div style={{ fontWeight: 700 }}>{name}</div>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div style={{ fontWeight: 700 }}>{match?.name || key}</div>
+                <div style={{ fontSize: 12, color: "#666" }}>
+                  {match?.party || ""} {match?.candidateNumber ? `• ${match.candidateNumber}` : ""}
+                </div>
+              </div>
               <div style={{ minWidth: 80, textAlign: "right", color: "#333" }}>
                 {percentText}
               </div>
@@ -110,11 +125,8 @@ export default function ResultsPage() {
           );
         })}
       </div>
-      <button 
-        onClick={signUpAndSave}
-        disabled={isSaving}
-      >
-        {isSaving ? 'Saving...' : isAuthenticated ? 'Save Results' : 'Sign Up to Share Results'}
+      <button onClick={signUpAndSave} disabled={isSaving}>
+        {isSaving ? "Saving..." : isAuthenticated ? "Save Results" : "Sign Up to Share Results"}
       </button>
     </div>
   );

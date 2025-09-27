@@ -10,30 +10,26 @@ const VARIANTS = [
   "Poolt",
   "Tugevalt poolt",
 ] as const;
-const QUESTION_COUNT = 20;
+const QUESTION_COUNT = 15;
 
 const QUESTIONS: string[] = [
-  "Government should increase spending on public healthcare.",
-  "Taxes on the wealthy should be raised to support social programs.",
-  "Private businesses should have fewer regulations.",
-  "The state should provide free higher education.",
-  "Military spending should be increased.",
-  "Environmental protection should take priority over economic growth.",
-  "Immigration should be made easier for most people.",
-  "Law enforcement should have stronger powers for public safety.",
-  "Same-sex marriage should be legal and protected.",
-  "The government should prioritize renewable energy investments.",
-  "Unions and workers' rights should be strengthened.",
-  "Religion should play a larger role in public life.",
-  "Foreign trade should be more restricted to protect local industries.",
-  "Healthcare should remain mostly privatized.",
-  "The voting age should be lowered.",
-  "Welfare benefits should be reduced to encourage work.",
-  "Technology companies should be more tightly regulated.",
-  "The death penalty should be legal.",
-  "Public transport should be heavily subsidized.",
-  "National sovereignty should take priority over international cooperation.",
+  "Narva linn peab looma tasuta lasteaiakohad, selle asemel et arendada noorte huvitegevuse võimalusi / Город Нарва должен создать бесплатные места в детских садах вместо того, чтобы развивать возможности для молодежных кружков и занятий",
+  "Narva peaks eelistama noortele mõeldud üritusi eakatele suunatud ürituste asemel / Нарва должна отдавать приоритет мероприятиям для молодежи вместо мероприятий для пожилых людей",
+  "Narva linn peaks keskenduma elanike küttearvete subsideerimisele külmal hooajal, selle asemel et toetada vanade majade renoveerimist / Городская власть Нарвы должна сосредоточиться на субсидировании счетов за отопление в холодный сезон, вместо того чтобы поддерживать ремонт старых домов",
+  "Narva peaks arendama maksimaalset multikultuursust, selle asemel et keskenduda ainult eesti keele üleminekule / Нарва должна развивать максимальную мультикультурность вместо того, чтобы сосредоточиваться только на переходе на эстонский язык",
+  "Narva linnavalitsuse kohustus on tegeleda linna positiivse maine kujundamisega Eesti meedias / Формирование положительного имиджа города в эстонских СМИ является обязанностью городской власти Нарвы",
+  "Narva peaks eelistama kergliiklusteede arendamist autoteede parandamisele / Нарва должна отдавать приоритет развитию велодорожек и пешеходных маршрутов вместо ремонта автомобильных дорог",
+  "Linna prioriteet peaks olema noorte perede toetuse suurendamine isegi siis, kui see tähendab väiksemat tuge pensionäridele / Приоритетом города должно стать увеличение поддержки молодых семей, даже если это приведёт к снижению помощи пенсионерам",
+  "Narva peaks sulgema ajutise piiripunkti Venemaaga, selle asemel et tagada piiriületajatele paremad tingimused (nt WC, varjualused, järjekorra korraldus, jms) / Нарва должна закрыть временный пограничный пункт с Россией вместо того, чтобы обеспечивать пересекающим границу улучшенные условия (например, туалеты, навесы, организацию очередей и т.д.)",
+  "Narva linn peaks eelistama ajaloolise arhitektuuripärandi säilitamist ja taastamist, selle asemel et keskenduda linna moderniseerimisele / Городская власть Нарвы должна отдавать приоритет сохранению и восстановлению исторического архитектурного наследия вместо сосредоточения на модернизации города",
+  "Narva peaks prioritiseerima tööstuse arendamisele turismi arendamise asemel / Нарва должна отдавать приоритет развитию промышленности вместо развития туризма",
+  "Narva linn peaks rohkem toetama kohalikke väikeettevõtteid, selle asemel et meelitada suuri välisinvestoreid / Городская власть Нарвы должна больше поддерживать местные малые предприятия вместо привлечения крупных иностранных инвесторов",
+  "Narva peaks suurendama kodanike võimalusi osaleda otsustusprotsessides (nt rahvahääletused, avalikud arutelud), selle asemel et keskenduda rohkem tsentraliseerimisele ja efektiivsele juhtimisele / Нарва должна расширять возможности граждан участвовать в процессах принятия решений (например, референдумы, публичные обсуждения) вместо того, чтобы сосредоточиться на централизации и эффективном управлении",
+  "Narva peaks panustama vaid tippnoorte arendamisse (talendid, sportlased), kuna nad esindavad linna riigi ja Euroopa tasandil, selle asemel et toetada kõiki lapsi võrdselt / Нарва должна инвестировать только в развитие талантливой молодёжи (таланты, спортсмены), поскольку они представляют город на национальном и европейском уровне, вместо того чтобы поддерживать всех детей одинаково",
+  "Narva peaks eelistama linna kaunistamist avaliku kunsti ja kultuuriprojektidega, selle asemel et rajada rohkem parke ja tavainfrastruktuuri / Нарва должна отдавать приоритет украшению города с помощью публичного искусства и культурных проектов вместо строительства дополнительных парков и обычной инфраструктуры",
+  "Narva edu tulevik sõltub traditsioonilisest põlevkivitööstusest, mitte rohelisest energiast / Будущий успех Нарвы зависит от традиционной сланцевой промышленности, а не от зелёной энергетики",
 ];
+
 
 function mapIndexToValue(index: number): number {
   return [-1, -0.5, 0, 0.5, 1][index] ?? 0;

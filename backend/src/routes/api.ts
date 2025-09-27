@@ -4,16 +4,21 @@ import politicians from "../../politicians.json";
 import { checkJwt } from "../middlewares/auth";
 import User from "../models/User";
 
-type dataT = {
-  [key: string]: number | null;
+type PoliticianMatch = {
+  party: string;
+  name: string;
+  candidateNumber: string;
+  percent: number | null;
 };
+
+type MatchResult = Record<string, PoliticianMatch>;
 
 const apiRouter = Router();
 
 apiRouter.post("/evaluate", (req, res) => {
   try {
     const answers: number[] = req.body.answers;
-    const results = computeMatchesFromJson(answers, politicians);
+    const results: MatchResult = computeMatchesFromJson(answers, politicians);
     res.status(200).json(results);
   } catch (err) {
     res.status(500).json({ message: "Could not evaluate politicians!" });
@@ -22,7 +27,10 @@ apiRouter.post("/evaluate", (req, res) => {
 
 apiRouter.post("/results", checkJwt, async (req, res) => {
   try {
-    const data: dataT = req.body.result;
+    const data: PoliticianMatch[] = req.body.result;
+    if (!Array.isArray(data)) {
+      return res.status(400).json({ message: "Invalid payload: result must be an array" });
+    }
     if (!req.auth?.payload.sub) {
       throw new Error("Invalid: missing sub");
     }
@@ -52,11 +60,39 @@ apiRouter.post("/results", checkJwt, async (req, res) => {
       throw new Error("Failed to save results");
     }
 
-    res.status(200).json({ message: "Saved results" });
+    res.status(200).json({ message: "Saved results", resultId: result._id });
   } catch (err) {
     console.error("Error saving results:", err);
     res.status(500).json({
       message: "Could not save results",
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
+  }
+});
+
+apiRouter.post("/public-results", async (req, res) => {
+  try {
+    if (!req.body.resultId) {
+      return res.status(500).json({ message: "The resultId was not provided" });
+    }
+    const user = await User.findById(req.body.resultId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.result) {
+      return res.status(404).json({ message: "No result provided in user" });
+    }
+
+    return res.status(200).json({
+      result: user.result
+    });
+
+  } catch (err) {
+    console.error("Error getting results:", err);
+    res.status(500).json({
+      message: "Could not get results",
       error: err instanceof Error ? err.message : "Unknown error",
     });
   }
