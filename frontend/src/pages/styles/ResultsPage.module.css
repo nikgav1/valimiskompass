@@ -1,0 +1,205 @@
+.page{
+  font-family: 'Raleway', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  color: var(--text-color);
+  background: var(--background-color);
+}
+
+.title{
+  padding: 30px 0;
+  text-align: center;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  font-family: 'Poppins', 'Raleway', sans-serif;
+  font-size: 40px;
+  margin: 0 0 14px 0;
+}
+
+.content{
+  max-width: 920px;
+  margin: 18px auto;
+  background: transparent;
+}
+
+.emptyContainer{
+  padding: 20px;
+}
+
+.ghostBtn{
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(34,34,34,0.06);
+  background: var(--background-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.error{
+  color: #b00020;
+  background: rgba(176,0,32,0.06);
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.lead{
+  margin: 4px 0 8px 0;
+  font-size: 18px;
+  color: rgba(34,34,34,0.7);
+  text-align: center;
+}
+
+.list{
+  display: grid;
+  gap: 10px;
+}
+
+.card{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 19px;
+  border-radius: 8px;
+  border: 2px solid rgba(34,34,34,0.06);
+  background: var(--background-color);
+}
+
+.cardLeft{
+  display: flex;
+  flex-direction: column;
+}
+
+.name{
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.meta{
+  font-size: 12px;
+  color: rgba(34,34,34,0.6);
+}
+
+.cardRight{
+  min-width: 88px;
+  text-align: right;
+}
+
+.percent{
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.saveBtn{
+  padding: 18px 22px;
+  margin-bottom: 10px;
+  background: var(--highlight-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 10px;
+  font-size: 20px;
+  font-family: 'Poppins';
+  cursor: pointer;
+}
+
+.saveBtn:disabled{
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.sortRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.sortLabel {
+  font-size: 14px;
+  color: rgba(34, 34, 34, 0.7);
+  margin-right: 6px;
+}
+
+.sortBtn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(34, 34, 34, 0.06);
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.sortBtn:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.sortBtn.activeSort {
+  background: var(--secondary-color);
+  color: var(--background-color);
+  border-color: rgba(0,0,0,0.06);
+}
+
+@media (min-width: 1000px){
+  .title{
+    font-size: 48px;
+  }
+  .content{
+    max-width: 1100px;
+  }
+  .card{
+    padding: 14px 18px;
+  }
+  .percent{
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 720px){
+  .title{
+    font-size: 34px;
+  }
+  .page{
+    padding: 12px 4%;
+  }
+  .card{
+    padding: 10px 12px;
+  }
+  .cardRight{
+    min-width: 64px;
+  }
+  .name{
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 430px){
+  .title{
+    font-size: 28px;
+    padding: 16px 0;
+  }
+  .card{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .cardRight{
+    width: 100%;
+    text-align: left;
+  }
+  .percent{
+    font-size: 16px;
+  }
+  .sortRow{
+    flex-direction: column;
+  }
+  .saveBtn{
+    width: 100%;
+  }
+}

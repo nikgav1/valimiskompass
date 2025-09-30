@@ -1,0 +1,400 @@
+.page {
+  font-family: "Raleway", sans-serif;
+  color: var(--text-color);
+}
+h1,
+h2,
+h3,
+.statement,
+.cta_button {
+  font-family: "Poppins", sans-serif;
+}
+.hero_photo_container {
+  position: relative;
+  width: 100%;
+  height: 23vh; /* desktop default */
+  overflow: hidden;
+}
+.hero_photo_container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--primary-color);
+  opacity: 0.5;
+  z-index: 1;
+}
+.hero_photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.7);
+  display: block;
+}
+
+/* make heading layout flexible: prefer left padding instead of hard left value */
+.heading_hero {
+  position: absolute;
+  top: 50%;
+  left: 25px;
+  transform: translateY(-50%);
+  color: var(--background-color);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  font-size: clamp(34px, 8vw, 88px);
+  text-align: left;
+  z-index: 2;
+  line-height: 0.95;
+  margin: 0;
+  max-width: calc(100% - 50px);
+  word-break: break-word;
+}
+
+.cta_page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 55px auto;
+  max-width: 1100px;
+  padding: 0 24px;
+}
+.cta_page h2 {
+  font-size: clamp(28px, 5vw, 50px);
+  line-height: 1.1;
+  margin: 0 0 12px 0;
+}
+.cta_page p {
+  margin: 15px 0 18px 0;
+  font-size: clamp(15px, 2.2vw, 18px);
+}
+.cta_row {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.time_hint {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: 14px;
+}
+.cta_button {
+  border: none;
+  cursor: pointer;
+  padding: 20px 35px;
+  background-color: var(--highlight-color);
+  color: var(--background-color);
+  border-radius: 15px;
+  font-size: clamp(16px, 2.8vw, 28px);
+  /* usability: larger hit area and consistent alignment */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.cta_button:active,
+.cta_button:focus {
+  transform: translateY(1px);
+  outline: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Data section */
+.data_page {
+  padding: 50px 24px;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  text-align: center;
+}
+.data_page p {
+  font-size: clamp(18px, 2.6vw, 30px);
+  line-height: 1.5;
+  font-weight: 500;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* How it works */
+.kuidasToimib_page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: transparent;
+  margin-bottom: 30px;
+}
+.kuidasToimib_page h1 {
+  font-size: clamp(28px, 4.5vw, 55px);
+  margin: 80px 0;
+  color: var(--text-color);
+}
+
+/* cards grid: prefer responsive minmax + auto-fit (you already used this) */
+.kuidasToimibCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 420px));
+  justify-content: center;
+  gap: 24px 40px;
+  width: 100%;
+  padding: 0 20px 60px 20px;
+}
+.kuidasToimibCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--secondary-color);
+  color: var(--background-color);
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.kuidasToimibCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+}
+.iconWrapper {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.kuidasToimibCard img {
+  filter: brightness(0) invert(1);
+  width: 64px;
+  height: 64px;
+}
+.kuidasToimibCard h2 {
+  margin: 0 0 8px 0;
+  font-size: clamp(18px, 2.2vw, 30px);
+}
+.kuidasToimibCard p {
+  margin: 0;
+  font-size: clamp(14px, 1.8vw, 22px);
+  color: var(--background-color);
+  opacity: 0.95;
+  text-align: center;
+}
+
+/* info and trust sections */
+.info_section {
+  padding-bottom: 30px;
+}
+.info_section h1 {
+  color: var(--background-color);
+  background-color: var(--secondary-color);
+  font-size: clamp(22px, 3.6vw, 50px);
+  padding: 50px 25px;
+  margin: 0 0 30px 0;
+}
+.info_section ul {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: left;
+  padding: 0 20px;
+}
+.info_section li {
+  margin: 10px 0;
+  font-size: clamp(16px, 2.2vw, 30px);
+  letter-spacing: 0.6px;
+}
+
+.trust_section {
+  padding: 40px 20px;
+  background: var(--primary-color);
+}
+.trust_section h1 {
+  color: var(--background-color);
+  text-align: center;
+  font-size: clamp(22px, 3.6vw, 50px);
+  padding: 60px 0;
+  margin: 0 0 24px 0;
+}
+.kuidasToimibCards2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 420px));
+  gap: 20px;
+  justify-content: center;
+  padding: 0 20px;
+}
+.kuidasToimibCard2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background-color);
+  width: 100%;
+  padding: 22px;
+  border-radius: 12px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  text-align: center;
+}
+.kuidasToimibCard2:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+}
+.iconWrapper2 {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.kuidasToimibCard2 img {
+  width: 64px;
+  height: 64px;
+}
+.footer {
+  padding: 36px 20px;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+/* --- Responsive improvements & additional breakpoints --- */
+
+/* large screens tweak */
+@media (min-width: 1200px) {
+  .hero_photo_container {
+    height: 54vh; /* taller hero for very large displays */
+  }
+  .heading_hero {
+    left: 48px;
+    max-width: 60%;
+    font-size: clamp(48px, 6.5vw, 88px);
+  }
+  .cta_page {
+    padding: 0 40px;
+  }
+}
+
+/* existing breakpoint (kept + augmented) */
+@media (max-width: 900px) {
+  .heading_hero {
+    font-size: 56px;
+    left: 18px;
+    max-width: calc(100% - 36px);
+  }
+  .cta_page h2 {
+    font-size: 36px;
+  }
+  .data_page p {
+    font-size: 22px;
+    padding: 0 10px;
+  }
+  .kuidasToimibCard {
+    padding: 22px;
+  }
+  .kuidasToimibCard2 {
+    padding: 18px;
+  }
+
+  /* For medium screens stack CTA row vertically if items overflow */
+  .cta_row {
+    gap: 12px;
+  }
+}
+
+/* small screens: stack things, reduce paddings and make CTA full width */
+@media (max-width: 520px) {
+  .hero_photo_container {
+    height: 23vh; /* shorter hero to keep visible content above the fold */
+  }
+  .hero_photo_container::after {
+    opacity: 0.6; /* slightly darker overlay for legibility on small screens */
+  }
+  .heading_hero {
+    font-size: 34px;
+    left: 14px;
+    top: 48%;
+    transform: translateY(-50%);
+    max-width: calc(100% - 28px);
+    padding-right: 14px;
+  }
+  .cta_page {
+    margin: 28px 16px;
+  }
+  .cta_button {
+    padding: 14px 22px;
+    font-size: 20px;
+    width: 100%;
+    max-width: none; /* let it fill the container on tiny screens */
+    border-radius: 12px;
+  }
+  .cta_row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .kuidasToimibCards {
+    gap: 16px;
+    grid-template-columns: 1fr; /* single column for very small screens */
+    padding: 0 12px 40px 12px;
+  }
+  .kuidasToimibCards2 {
+    gap: 12px;
+    grid-template-columns: 1fr;
+    padding: 0 12px;
+  }
+  .kuidasToimibCard {
+    padding: 18px;
+    border-radius: 12px;
+  }
+  .kuidasToimibCard2 {
+    padding: 14px;
+  }
+
+  .data_page {
+    padding: 30px 14px;
+  }
+  .data_page p {
+    font-size: 18px;
+  }
+}
+
+/* very small (narrow) screens / older phones */
+@media (max-width: 380px) {
+  .hero_photo_container {
+    height: 20vh;
+  }
+  .heading_hero {
+    font-size: 28px;
+    left: 12px;
+    max-width: calc(100% - 24px);
+  }
+  .cta_page {
+    margin: 20px 12px;
+  }
+  .cta_button {
+    padding: 12px 18px;
+    font-size: 18px;
+  }
+  .info_section h1 {
+    font-size: 28px;
+    padding: 20px 12px;
+  }
+  .trust_section h1 {
+    padding: 20px 8px;
+    font-size: 26px;
+  }
+}
+
+
+/* Images inside cards should scale down a bit on tiny screens */
+@media (max-width: 520px) {
+  .iconWrapper,
+  .iconWrapper2 {
+    width: 56px;
+    height: 56px;
+  }
+  .kuidasToimibCard img,
+  .kuidasToimibCard2 img {
+    width: 56px;
+    height: 56px;
+  }
+}

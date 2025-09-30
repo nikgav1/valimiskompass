@@ -1,0 +1,30 @@
+:root {
+  --primary-color: #1A2A40;
+  --secondary-color: #4F81C7;
+  --background-color: #F4F6F8;
+  --highlight-color: #2EBAC6;
+  --text-color: #222222;
+}
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/Raleway-cyrillic.woff2') format('woff2'),
+       url('/fonts/Raleway-cyrillic.woff') format('woff');
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/Poppins-Bold.woff2') format('woff2'),
+       url('/fonts/Poppins-Bold.woff') format('woff');
+  font-display: swap;
+  font-weight: 800;
+  font-style: normal;
+}
+
+body{
+    background-color: var(--background-color);
+    font-family: 'Raleway', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color: var(--text-color);
+}

@@ -1,14 +1,14 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./styles/TestPage.css";
+import styles from "./styles/TestPage.module.css";
 
 const VARIANTS = [
-  "Tugevalt vastu",
-  "Vastu",
+  "Ei nõustu üldse",
+  "Ei nõustu",
   "Neutraalne",
-  "Poolt",
-  "Tugevalt poolt",
+  "Nõustun osaliselt",
+  "Nõustun täielikult",
 ] as const;
 const QUESTION_COUNT = 15;
 
@@ -29,7 +29,6 @@ const QUESTIONS: string[] = [
   "Narva peaks eelistama linna kaunistamist avaliku kunsti ja kultuuriprojektidega, selle asemel et rajada rohkem parke ja tavainfrastruktuuri / Нарва должна отдавать приоритет украшению города с помощью публичного искусства и культурных проектов вместо строительства дополнительных парков и обычной инфраструктуры",
   "Narva edu tulevik sõltub traditsioonilisest põlevkivitööstusest, mitte rohelisest energiast / Будущий успех Нарвы зависит от традиционной сланцевой промышленности, а не от зелёной энергетики",
 ];
-
 
 function mapIndexToValue(index: number): number {
   return [-1, -0.5, 0, 0.5, 1][index] ?? 0;
@@ -53,7 +52,7 @@ function valueToIndex(value: number | null): number | null {
 }
 
 export default function TestPage() {
-  const navigate = useNavigate()  
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState<(number | null)[]>(() =>
     Array(QUESTION_COUNT).fill(null)
   );
@@ -100,10 +99,12 @@ export default function TestPage() {
       return;
     }
     const finalAnswers = answers as number[];
-    const res = await axios.post(import.meta.env.VITE_BACKEND_URL + '/api/evaluate', {answers: finalAnswers})
-    console.log(res);
+    const res = await axios.post(
+      import.meta.env.VITE_BACKEND_URL + "/api/evaluate",
+      { answers: finalAnswers }
+    );
     if (res.status === 200) {
-        navigate('/results', {replace: true, state: { result: res.data }})
+      navigate("/results", { replace: true, state: { result: res.data } });
     }
   }, [answers]);
 
@@ -120,78 +121,92 @@ export default function TestPage() {
   }, [handlePrev, handleNext, handleVariantClick]);
 
   return (
-    <div className="test-page">
-      <h2>
-        Küsimus {currentQuestion + 1} / {QUESTIONS.length}
-      </h2>
+    <>
+      <h1 className={styles.title}>Valimiskompassi test</h1>
+      <div className={styles.testPage}>
+        <div className={styles.progress}>
+          {answers.filter((a) => a !== null).length}/{QUESTIONS.length} väidet
+        </div>
 
-      <div
-        role="progressbar"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={progressPercent}
-        aria-label="Progress of questionnaire"
-        className="bar-container"
-      >
-        <div className="bar-fill" style={{ width: `${progressPercent}%` }} />
-      </div>
-
-      <div className="progress" style={{ marginBottom: 8 }}>
-        Progress: {progressPercent}% ({answers.filter((a) => a !== null).length}
-        /{QUESTIONS.length})
-      </div>
-
-      <p className="question-text">{QUESTIONS[currentQuestion]}</p>
-
-      <div
-        className="test-variants"
-        role="radiogroup"
-        aria-label={`Vastuse variandid küsimusele ${currentQuestion + 1}`}
-      >
-        {VARIANTS.map((label, i) => {
-          const selected = selectedIndexForCurrent === i;
-          return (
-            <button
-              key={i}
-              type="button"
-              role="radio"
-              aria-checked={selected}
-              className={selected ? "variant-btn selected" : "variant-btn"}
-              onClick={() => handleVariantClick(i)}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="nav-row" style={{ marginTop: 12 }}>
-        <button
-          type="button"
-          onClick={handlePrev}
-          disabled={currentQuestion === 0}
+        <div
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progressPercent}
+          aria-label="Progress of questionnaire"
+          className={styles.barContainer}
         >
-          Tagasi
-        </button>
+          <div
+            className={styles.barFill}
+            style={{
+              width: `${progressPercent}%`,
+              borderRight:
+                progressPercent === 0 || progressPercent === 100
+                  ? "none"
+                  : "2px solid var(--text-color)",
+            }}
+          />
+        </div>
 
-        <button
-          type="button"
-          onClick={handleNext}
-          disabled={currentQuestion === QUESTIONS.length - 1}
-          style={{ marginLeft: 8 }}
+        <h2 className={styles.h2}>Väide number {currentQuestion + 1}:</h2>
+
+        <p className={styles.questionText}>{QUESTIONS[currentQuestion]}</p>
+
+        <div
+          className={styles.testVariants}
+          role="radiogroup"
+          aria-label={`Vastuse variandid küsimusele ${currentQuestion + 1}`}
         >
-          Järgmine
-        </button>
+          {VARIANTS.map((label, i) => {
+            const selected = selectedIndexForCurrent === i;
+            return (
+              <button
+                key={i}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                className={`${styles.variantBtn} ${
+                  selected ? styles.selected : ""
+                }`}
+                onClick={() => handleVariantClick(i)}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
 
+        <div className={styles.navRow}>
+          <button
+            type="button"
+            onClick={handlePrev}
+            disabled={currentQuestion === 0}
+            className={styles.btn}
+          >
+            Tagasi
+          </button>
+
+          <button
+            type="button"
+            onClick={handleNext}
+            disabled={
+              currentQuestion === QUESTIONS.length - 1 ||
+              answers[currentQuestion] === null
+            }
+            className={styles.btn}
+          >
+            Järgmine
+          </button>
+        </div>
         <button
-          disabled={!allAnswered}
+          hidden={!allAnswered}
           type="button"
           onClick={handleSubmit}
-          style={{ marginLeft: 16 }}
+          className={`${styles.btn} ${styles.kontrolli}`}
         >
           Kontrolli
         </button>
       </div>
-    </div>
+    </>
   );
 }

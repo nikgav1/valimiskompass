@@ -1,7 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import axios from "axios";
+import styles from "./styles/ResultsPage.module.css";
 
 type PoliticianMatch = {
   party: string;
@@ -10,12 +11,21 @@ type PoliticianMatch = {
   percent: number | null;
 };
 
-type ResultShape = PoliticianMatch[] | Record<string, PoliticianMatch> | null | undefined;
+type ResultShape =
+  | PoliticianMatch[]
+  | Record<string, PoliticianMatch>
+  | null
+  | undefined;
 
 export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { loginWithPopup, isAuthenticated, getAccessTokenSilently, getAccessTokenWithPopup } = useAuth0();
+  const {
+    loginWithPopup,
+    isAuthenticated,
+    getAccessTokenSilently,
+    getAccessTokenWithPopup,
+  } = useAuth0();
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -26,24 +36,38 @@ export default function ResultsPage() {
     ? Object.values(raw)
     : undefined;
 
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
+
+  const sorted = useMemo(() => {
+    if (!resultArray) return [];
+    return [...resultArray].sort((a, b) => {
+      const va =
+        typeof a.percent === "number" && Number.isFinite(a.percent)
+          ? a.percent
+          : -Infinity;
+      const vb =
+        typeof b.percent === "number" && Number.isFinite(b.percent)
+          ? b.percent
+          : -Infinity;
+      return sortOrder === "desc" ? vb - va : va - vb;
+    });
+  }, [resultArray, sortOrder]);
+
   if (!resultArray || resultArray.length === 0) {
     return (
-      <div style={{ padding: 20 }}>
-        <h1>Sa pead tegema testi esiteks!</h1>
+      <div className={styles.emptyContainer}>
+        <h1 className={styles.title}>Sa pead tegema testi esiteks!</h1>
         <p>
-          <button onClick={() => navigate("/", { replace: true })}>
+          <button
+            className={styles.ghostBtn}
+            onClick={() => navigate("/", { replace: true })}
+          >
             Mine testi
           </button>
         </p>
       </div>
     );
   }
-
-  const sorted = [...resultArray].sort((a, b) => {
-    const va = typeof a.percent === "number" && Number.isFinite(a.percent) ? a.percent : -Infinity;
-    const vb = typeof b.percent === "number" && Number.isFinite(b.percent) ? b.percent : -Infinity;
-    return vb - va;
-  });
 
   async function signUpAndSave() {
     setError(null);
@@ -55,9 +79,13 @@ export default function ResultsPage() {
         await loginWithPopup();
       }
       try {
-        token = await getAccessTokenSilently({ authorizationParams: { audience: import.meta.env.VITE_AUDIENCE }});
-      } catch (error) {
-        const popUpToken = await getAccessTokenWithPopup({ authorizationParams: { audience: import.meta.env.VITE_AUDIENCE }});
+        token = await getAccessTokenSilently({
+          authorizationParams: { audience: import.meta.env.VITE_AUDIENCE },
+        });
+      } catch (err) {
+        const popUpToken = await getAccessTokenWithPopup({
+          authorizationParams: { audience: import.meta.env.VITE_AUDIENCE },
+        });
         if (popUpToken) {
           token = popUpToken as string;
         }
@@ -79,8 +107,10 @@ export default function ResultsPage() {
       if (response.status !== 200) {
         throw new Error("Failed to save results");
       }
+      const resultId = response.data.resultId;
 
-      navigate("/results/" + response.data.resultId);
+      sessionStorage.setItem(`justCompletedResult-${resultId}`, "1");
+      navigate(`/results/${resultId}`, { state: { fromCompletion: true } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -89,45 +119,79 @@ export default function ResultsPage() {
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Resultaat</h1>
-      {error && <div style={{ color: "red", marginBottom: 10 }}>{error}</div>}
-      <p>Top matches (sorted by percent):</p>
+    <div className={styles.page}>
+      <h1 className={styles.title}>Resultaat</h1>
 
-      <div style={{ display: "grid", gap: 8 }}>
-        {sorted.map((match, idx) => {
-          const percent = match?.percent;
-          const percentText = typeof percent === "number" && Number.isFinite(percent) ? `${percent.toFixed(2)}%` : "N/A";
-          const key = match.candidateNumber || `${match.name}_${idx}`;
-          return (
-            <div
-              key={key}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "8px 12px",
-                borderRadius: 6,
-                border: "1px solid #eee",
-                background: "#fff",
-              }}
+      <div className={styles.content}>
+        {error && <div className={styles.error}>{error}</div>}
+
+        <div className={styles.topRow}>
+          <p className={styles.lead}>Kõik resultaadid (protsendi järgi):</p>
+
+          <div
+            className={styles.sortRow}
+            role="toolbar"
+            aria-label="Sort results"
+          >
+            <span className={styles.sortLabel}>Sorteeri:</span>
+            <button
+              className={`${styles.sortBtn} ${
+                sortOrder === "desc" ? styles.activeSort : ""
+              }`}
+              onClick={() => setSortOrder("desc")}
+              aria-pressed={sortOrder === "desc"}
+              title="Most percent first"
             >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ fontWeight: 700 }}>{match?.name || key}</div>
-                <div style={{ fontSize: 12, color: "#666" }}>
-                  {match?.party || ""} {match?.candidateNumber ? `• ${match.candidateNumber}` : ""}
+              Kõige suurem
+            </button>
+            <button
+              className={`${styles.sortBtn} ${
+                sortOrder === "asc" ? styles.activeSort : ""
+              }`}
+              onClick={() => setSortOrder("asc")}
+              aria-pressed={sortOrder === "asc"}
+              title="Least percent first"
+            >
+              Kõige väiksem
+            </button>
+          </div>
+        </div>
+        <button
+          className={styles.saveBtn}
+          onClick={signUpAndSave}
+          disabled={isSaving}
+        >
+          {isSaving
+            ? "Salvestan..."
+            : isAuthenticated
+            ? "Salvesta ja jaga oma sõpradega"
+            : "Registreeri ja jaga oma sõpradega"}
+        </button>
+        <div className={styles.list}>
+          {sorted.map((match, idx) => {
+            const percent = match?.percent;
+            const percentText =
+              typeof percent === "number" && Number.isFinite(percent)
+                ? `${percent.toFixed(2)}%`
+                : "N/A";
+            const key = match.candidateNumber || `${match.name}_${idx}`;
+            return (
+              <div key={key} className={styles.card}>
+                <div className={styles.cardLeft}>
+                  <div className={styles.name}>{match?.name || key}</div>
+                  <div className={styles.meta}>
+                    {match?.party || ""}{" "}
+                    {match?.candidateNumber ? `• ${match.candidateNumber}` : ""}
+                  </div>
+                </div>
+                <div className={styles.cardRight}>
+                  <div className={styles.percent}>{percentText}</div>
                 </div>
               </div>
-              <div style={{ minWidth: 80, textAlign: "right", color: "#333" }}>
-                {percentText}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-      <button onClick={signUpAndSave} disabled={isSaving}>
-        {isSaving ? "Saving..." : isAuthenticated ? "Save Results" : "Sign Up to Share Results"}
-      </button>
     </div>
   );
 }
