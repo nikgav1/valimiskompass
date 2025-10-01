@@ -2,7 +2,8 @@ import { Router } from "express";
 import { POLITICIANS_JSON } from "../server";
 import { checkJwt } from "../middlewares/auth";
 import User from "../models/User";
-import wasm from '../../../wasm/pkg';
+// @ts-expect-error different path for Docker
+import wasm from '../../wasm/pkg';
 
 type PoliticianMatch = {
   party: string;
