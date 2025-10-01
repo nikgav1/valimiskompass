@@ -22,10 +22,11 @@ export default function ResultsPage() {
   const navigate = useNavigate();
   const {
     loginWithPopup,
+    loginWithRedirect,
     isAuthenticated,
     getAccessTokenSilently,
-    getAccessTokenWithPopup,
   } = useAuth0();
+
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -56,7 +57,7 @@ export default function ResultsPage() {
   if (!resultArray || resultArray.length === 0) {
     return (
       <div className={styles.emptyContainer}>
-        <h1 className={styles.title}>Sa pead tegema testi esiteks!</h1>
+        <h1 className={styles.title}>Pead esmalt testi tegema!</h1>
         <p>
           <button
             className={styles.ghostBtn}
@@ -76,20 +77,14 @@ export default function ResultsPage() {
 
     try {
       if (!isAuthenticated) {
-        await loginWithPopup();
-      }
-      try {
-        token = await getAccessTokenSilently({
+        await loginWithPopup({
           authorizationParams: { audience: import.meta.env.VITE_AUDIENCE },
         });
-      } catch (err) {
-        const popUpToken = await getAccessTokenWithPopup({
-          authorizationParams: { audience: import.meta.env.VITE_AUDIENCE },
-        });
-        if (popUpToken) {
-          token = popUpToken as string;
-        }
       }
+
+      token = await getAccessTokenSilently({
+        authorizationParams: { audience: import.meta.env.VITE_AUDIENCE },
+      });
 
       const payload = { result: sorted };
 
@@ -105,14 +100,18 @@ export default function ResultsPage() {
       );
 
       if (response.status !== 200) {
-        throw new Error("Failed to save results");
+        throw new Error("Tulemuste salvestamine ebaõnnestus");
       }
-      const resultId = response.data.resultId;
 
+      const resultId = response.data.resultId;
       sessionStorage.setItem(`justCompletedResult-${resultId}`, "1");
       navigate(`/results/${resultId}`, { state: { fromCompletion: true } });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Tekkis viga. Proovi lubada hüpikaknaid või logi sisse teise lehe kaudu."
+      );
     } finally {
       setIsSaving(false);
     }
@@ -120,18 +119,40 @@ export default function ResultsPage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Resultaat</h1>
+      <h1 className={styles.title}>Tulemused</h1>
 
       <div className={styles.content}>
-        {error && <div className={styles.error}>{error}</div>}
+        {error && (
+          <div className={styles.error}>
+            <div style={{ marginBottom: 8 }}>{error}</div>
+            <div>
+              <button
+                className={styles.ghostBtn}
+                onClick={() =>
+                  loginWithRedirect({
+                    authorizationParams: {
+                      audience: import.meta.env.VITE_AUDIENCE,
+                      redirect_uri: window.location.origin,
+                    },
+                  })
+                }
+              >
+                Logi sisse teisel lehel
+              </button>
+              <span style={{ marginLeft: 8 }}>
+                (Kasuta seda, kui hüpikaknad on blokeeritud)
+              </span>
+            </div>
+          </div>
+        )}
 
         <div className={styles.topRow}>
-          <p className={styles.lead}>Kõik resultaadid (protsendi järgi):</p>
+          <p className={styles.lead}>Kõik tulemused (protsendi järgi):</p>
 
           <div
             className={styles.sortRow}
             role="toolbar"
-            aria-label="Sort results"
+            aria-label="Sorteeri tulemusi"
           >
             <span className={styles.sortLabel}>Sorteeri:</span>
             <button
@@ -140,7 +161,7 @@ export default function ResultsPage() {
               }`}
               onClick={() => setSortOrder("desc")}
               aria-pressed={sortOrder === "desc"}
-              title="Most percent first"
+              title="Kõrgeim protsent ees"
             >
               Kõige suurem
             </button>
@@ -150,12 +171,13 @@ export default function ResultsPage() {
               }`}
               onClick={() => setSortOrder("asc")}
               aria-pressed={sortOrder === "asc"}
-              title="Least percent first"
+              title="Madalaim protsent ees"
             >
               Kõige väiksem
             </button>
           </div>
         </div>
+
         <button
           className={styles.saveBtn}
           onClick={signUpAndSave}
@@ -167,6 +189,7 @@ export default function ResultsPage() {
             ? "Salvesta ja jaga oma sõpradega"
             : "Registreeri ja jaga oma sõpradega"}
         </button>
+
         <div className={styles.list}>
           {sorted.map((match, idx) => {
             const percent = match?.percent;

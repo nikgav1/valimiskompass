@@ -182,12 +182,12 @@ export default function ShareResultsPage() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>Shared Results</h1>
+      <h1 className={styles.title}>Jagatud tulemused</h1>
 
       <div className={styles.shareBanner}>
         {cameFromCompletion ? (
           <>
-            <div className={styles.shareText}>Jaga resultaadid oma sõpradega</div>
+            <div className={styles.shareText}>Jaga tulemusi oma sõpradega</div>
             <div className={styles.shareActions}>
               <button className={styles.button} onClick={handleShareOrCopy}>
                 {shareButtonLabel}
