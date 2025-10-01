@@ -16,7 +16,7 @@ const QUESTIONS: string[] = [
   "Narva linn peab looma tasuta lasteaiakohad, selle asemel et arendada noorte huvitegevuse võimalusi / Город Нарва должен создать бесплатные места в детских садах вместо того, чтобы развивать возможности для молодежных кружков и занятий",
   "Narva peaks eelistama noortele mõeldud üritusi eakatele suunatud ürituste asemel / Нарва должна отдавать приоритет мероприятиям для молодежи вместо мероприятий для пожилых людей",
   "Narva linn peaks keskenduma elanike küttearvete subsideerimisele külmal hooajal, selle asemel et toetada vanade majade renoveerimist / Городская власть Нарвы должна сосредоточиться на субсидировании счетов за отопление в холодный сезон, вместо того чтобы поддерживать ремонт старых домов",
-  "Narva peaks arendama maksimaalset multikultuursust, selle asemel et keskenduda ainult eesti keele üleminekule / Нарва должна развивать максимальную мультикультурность вместо того, чтобы сосредоточиваться только на переходе на эстонский язык",
+  "Narva peaks arendama maksimaalset multikultuursust, selle asemel et keskenduda ainult eesti keele üleminekule / Нарва должна развивать максимальную мультикультурность вместо того, чтобы сосредоточиться только на переходе на эстонский язык",
   "Narva linnavalitsuse kohustus on tegeleda linna positiivse maine kujundamisega Eesti meedias / Формирование положительного имиджа города в эстонских СМИ является обязанностью городской власти Нарвы",
   "Narva peaks eelistama kergliiklusteede arendamist autoteede parandamisele / Нарва должна отдавать приоритет развитию велодорожек и пешеходных маршрутов вместо ремонта автомобильных дорог",
   "Linna prioriteet peaks olema noorte perede toetuse suurendamine isegi siis, kui see tähendab väiksemat tuge pensionäridele / Приоритетом города должно стать увеличение поддержки молодых семей, даже если это приведёт к снижению помощи пенсионерам",
@@ -106,7 +106,7 @@ export default function TestPage() {
     if (res.status === 200) {
       navigate("/results", { replace: true, state: { result: res.data } });
     }
-  }, [answers]);
+  }, [answers, navigate]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -119,6 +119,8 @@ export default function TestPage() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [handlePrev, handleNext, handleVariantClick]);
+
+  const showKontrolli = allAnswered && currentQuestion === QUESTIONS.length - 1;
 
   return (
     <>
@@ -181,31 +183,33 @@ export default function TestPage() {
             type="button"
             onClick={handlePrev}
             disabled={currentQuestion === 0}
-            className={styles.btn}
+            className={`${styles.btn} ${styles.prevBtn}`}
           >
             Tagasi
           </button>
 
-          <button
-            type="button"
-            onClick={handleNext}
-            disabled={
-              currentQuestion === QUESTIONS.length - 1 ||
-              answers[currentQuestion] === null
-            }
-            className={styles.btn}
-          >
-            Järgmine
-          </button>
+          {showKontrolli ? (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className={`${styles.btn} ${styles.kontrolli} ${styles.nextBtn}`}
+            >
+              Kontrolli
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={
+                currentQuestion === QUESTIONS.length - 1 ||
+                answers[currentQuestion] === null
+              }
+              className={`${styles.btn} ${styles.nextBtn}`}
+            >
+              Järgmine
+            </button>
+          )}
         </div>
-        <button
-          hidden={!allAnswered}
-          type="button"
-          onClick={handleSubmit}
-          className={`${styles.btn} ${styles.kontrolli}`}
-        >
-          Kontrolli
-        </button>
       </div>
     </>
   );
