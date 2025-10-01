@@ -54,7 +54,7 @@ COPY --from=builder /usr/src/app/backend/csv-to-json.js ./csv-to-json.js
 COPY --from=builder /usr/src/app/wasm ./wasm
 
 ENV NODE_ENV=production
-ENV PORT=3000
-EXPOSE 3000
+
+EXPOSE 8080
 
 CMD ["pnpm", "start"]
