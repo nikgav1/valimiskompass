@@ -1,14 +1,104 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="et">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./reset.css">
-    <link rel="stylesheet" href="./globals.css">
-    <title>Valimiskompass</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary meta tags -->
+    <title>Valimiskompass Narva — leia, kes jagab sinu väärtusi</title>
+    <meta
+      name="description"
+      content="Testi oma seisukohti 15 lühiväitega ja vaata, millised Narva kandidaadid ja erakonnad sinu väärtusi jagavad — anonüümne ja lihtne kasutada."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta http-equiv="content-language" content="et" />
+
+    <!-- Canonical + hreflang -->
+    <link rel="canonical" href="https://narva-valimiskompass.online/" />
+    <link
+      rel="alternate"
+      hreflang="et"
+      href="https://narva-valimiskompass.online/"
+    />
+
+    <!-- Favicons / PWA -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <meta name="theme-color" content="#1A2A40" />
+
+    <!-- Social (Open Graph) -->
+    <meta property="og:locale" content="et_EE" />
+    <meta property="og:site_name" content="Valimiskompass Narva" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Valimiskompass Narva — leia, kes jagab sinu väärtusi"
+    />
+    <meta
+      property="og:description"
+      content="Testi oma seisukohti 15 lühiväitega ja vaata, millised Narva kandidaadid ja erakonnad sinu väärtusi jagavad. Anonüümne ja lihtne kasutada."
+    />
+    <meta property="og:url" content="https://narva-valimiskompass.online/" />
+    <meta
+      property="og:image"
+      content="https://narva-valimiskompass.online/images/photo1.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Valimiskompass Narva — leia, kes jagab sinu väärtusi"
+    />
+    <meta
+      name="twitter:description"
+      content="Testi oma seisukohti 15 lühiväitega ja vaata, millised Narva kandidaadid ja erakonnad sinu väärtusi jagavad. Anonüümne ja lihtne kasutada."
+    />
+    <meta
+      name="twitter:image"
+      content="https://narva-valimiskompass.online/images/photo1.jpg"
+    />
+
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="script"
+      href="/src/main.tsx"
+      crossorigin="anonymous"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/reset.css" />
+    <link rel="stylesheet" href="/globals.css" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Accessibility: skip link for keyboard users -->
+    <a
+      class="skip-link"
+      href="#main"
+      style="position: absolute; left: -9999px; top: auto"
+    >
+      Hüpata sisu juurde
+    </a>
+
+    <noscript>
+      <strong>JavaScript on välja lülitatud.</strong> Valimiskompass nõuab
+      nõuetekohaseks kasutamiseks JavaScripti. Palun lubage JavaScript või
+      kasutage uuemat brauserit.
+    </noscript>
+
+    <div
+      id="root"
+      role="application"
+      aria-label="Valimiskompass rakendus"
+    ></div>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
