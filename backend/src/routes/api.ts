@@ -2,8 +2,9 @@ import { Router } from "express";
 import { POLITICIANS_JSON } from "../server";
 import { checkJwt } from "../middlewares/auth";
 import User from "../models/User";
+import AlgorithmLog from "../models/Counter";
 // @ts-expect-error different path for Docker
-import wasm from '../../wasm/pkg';
+import wasm from "../../wasm/pkg";
 
 type PoliticianMatch = {
   party: string;
@@ -16,12 +17,12 @@ type MatchResult = Record<string, PoliticianMatch>;
 
 const apiRouter = Router();
 
-apiRouter.post('/evaluate', async (req, res) => {
+apiRouter.post("/evaluate", async (req, res) => {
   try {
     const answers: number[] = req.body.answers;
 
     if (!Array.isArray(answers)) {
-      return res.status(400).json({ message: 'answers must be an array' });
+      return res.status(400).json({ message: "answers must be an array" });
     }
 
     // call wasm function — it expects stringified JSON and returns stringified JSON
@@ -29,11 +30,24 @@ apiRouter.post('/evaluate', async (req, res) => {
 
     const resultJson = wasm.compute_matches(answersJson, POLITICIANS_JSON, 15);
     const results = JSON.parse(resultJson);
-
+    await AlgorithmLog.findOneAndUpdate(
+      { name: "CosinePoliticianEvaluate" },
+      {
+        $inc: { usedCount: 1 },
+        $set: { lastUsedAt: new Date() },
+      },
+      {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true,
+      }
+    );
     res.status(200).json(results);
   } catch (err) {
-    console.error('evaluate error:', err);
-    res.status(500).json({ message: 'Could not evaluate politicians!', error: String(err) });
+    console.error("evaluate error:", err);
+    res
+      .status(500)
+      .json({ message: "Could not evaluate politicians!", error: String(err) });
   }
 });
 
@@ -41,7 +55,9 @@ apiRouter.post("/results", checkJwt, async (req, res) => {
   try {
     const data: PoliticianMatch[] = req.body.result;
     if (!Array.isArray(data)) {
-      return res.status(400).json({ message: "Invalid payload: result must be an array" });
+      return res
+        .status(400)
+        .json({ message: "Invalid payload: result must be an array" });
     }
     if (!req.auth?.payload.sub) {
       throw new Error("Invalid: missing sub");
@@ -98,9 +114,8 @@ apiRouter.post("/public-results", async (req, res) => {
     }
 
     return res.status(200).json({
-      result: user.result
+      result: user.result,
     });
-
   } catch (err) {
     console.error("Error getting results:", err);
     res.status(500).json({
