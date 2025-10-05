@@ -5,7 +5,7 @@ const CARDS1 = [
   {
     icon: "/icons/Questions.svg",
     title: "Vasta küsimustele",
-    text: "30 lühikest väidet kohaliku elu kohta",
+    text: "15 lühikest väidet kohaliku elu kohta",
   },
   {
     icon: "/icons/Profile.svg",
