@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import styles from "./styles/TestPage.module.css";
 
 const VARIANTS = [
-  "Ei nõustu üldse",
-  "Ei nõustu",
-  "Neutraalne",
-  "Nõustun osaliselt",
-  "Nõustun täielikult",
+  "Ei nõustu üldse/ Полностью не согласен",
+  "Ei nõustu/ Не согласен",
+  "Neutraalne/ Нейтрально",
+  "Nõustun osaliselt/ Скорее согласен",
+  "Nõustun täielikult/ Полностью согласен",
 ] as const;
 const QUESTION_COUNT = 15;
 
@@ -161,6 +161,10 @@ export default function TestPage() {
         >
           {VARIANTS.map((label, i) => {
             const selected = selectedIndexForCurrent === i;
+            const parts = label.split("/");
+
+            const estonian = parts[0];
+            const russian = parts[1];
             return (
               <button
                 key={i}
@@ -172,7 +176,8 @@ export default function TestPage() {
                 }`}
                 onClick={() => handleVariantClick(i)}
               >
-                {label}
+                <p className={styles.estonian_choice}>{estonian}/</p>
+                <p className={styles.russian_choice}>{russian}</p>
               </button>
             );
           })}

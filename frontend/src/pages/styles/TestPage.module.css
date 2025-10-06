@@ -54,9 +54,7 @@
   background: transparent;
   border: 0;
   border-left: 5px solid var(--text-color);
-  font-family: 'Poppins';
-  font-size: 30px;
-  font-weight: 800;
+  font-size: 26px;
   text-align: center;
   cursor: pointer;
   line-height: 1.1;
@@ -64,7 +62,14 @@
   word-break: break-word;
   hyphens: auto;
 }
-
+.estonian_choice{
+  display: inline;
+  font-family: 'Poppins';
+}
+.russian_choice{
+  display: inline;
+  font-family: 'Montserrat';
+}
 .variantBtn:first-child {
   border-left: 0;
 }
