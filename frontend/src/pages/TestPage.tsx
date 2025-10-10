@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./styles/TestPage.module.css";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const VARIANTS = [
   "Ei nõustu üldse/ Полностью не согласен",
@@ -53,6 +54,7 @@ function valueToIndex(value: number | null): number | null {
 
 export default function TestPage() {
   const navigate = useNavigate();
+  const { isLoading, isAuthenticated, logout } = useAuth0();
   const [answers, setAnswers] = useState<(number | null)[]>(() =>
     Array(QUESTION_COUNT).fill(null)
   );
@@ -68,6 +70,12 @@ export default function TestPage() {
     const answered = answers.filter((a) => a !== null).length;
     return Math.round((answered / QUESTIONS.length) * 100);
   }, [answers]);
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      logout({ logoutParams: { returnTo: window.location.href } });
+    }
+  }, [isLoading, isAuthenticated, logout]);
 
   useEffect(() => {
     setAllAnswered(answers.every((a) => a !== null));
