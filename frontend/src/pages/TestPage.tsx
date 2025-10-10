@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./styles/TestPage.module.css";
@@ -60,16 +60,14 @@ export default function TestPage() {
   );
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [allAnswered, setAllAnswered] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const isMountedRef = useRef(true);
 
-  const selectedIndexForCurrent = useMemo(
-    () => valueToIndex(answers[currentQuestion] ?? null),
-    [answers, currentQuestion]
-  );
-
-  const progressPercent = useMemo(() => {
-    const answered = answers.filter((a) => a !== null).length;
-    return Math.round((answered / QUESTIONS.length) * 100);
-  }, [answers]);
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -79,6 +77,16 @@ export default function TestPage() {
 
   useEffect(() => {
     setAllAnswered(answers.every((a) => a !== null));
+  }, [answers]);
+
+  const selectedIndexForCurrent = useMemo(
+    () => valueToIndex(answers[currentQuestion] ?? null),
+    [answers, currentQuestion]
+  );
+
+  const progressPercent = useMemo(() => {
+    const answered = answers.filter((a) => a !== null).length;
+    return Math.round((answered / QUESTIONS.length) * 100);
   }, [answers]);
 
   const handleVariantClick = useCallback(
@@ -92,10 +100,7 @@ export default function TestPage() {
     [currentQuestion]
   );
 
-  const handlePrev = useCallback(
-    () => setCurrentQuestion((i) => Math.max(0, i - 1)),
-    []
-  );
+  const handlePrev = useCallback(() => setCurrentQuestion((i) => Math.max(0, i - 1)), []);
   const handleNext = useCallback(
     () => setCurrentQuestion((i) => Math.min(QUESTIONS.length - 1, i + 1)),
     []
@@ -107,12 +112,25 @@ export default function TestPage() {
       return;
     }
     const finalAnswers = answers as number[];
-    const res = await axios.post(
-      import.meta.env.VITE_BACKEND_URL + "/api/evaluate",
-      { answers: finalAnswers }
-    );
-    if (res.status === 200) {
-      navigate("/results", { replace: true, state: { result: res.data } });
+    setLoading(true);
+    try {
+      const res = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/api/evaluate",
+        { answers: finalAnswers }
+      );
+      if (res.status === 200 && isMountedRef.current) {
+        navigate("/results", { replace: true, state: { result: res.data } });
+      } else {
+        alert("Serveri vastus ei olnud ootuspärane.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert(
+        err?.response?.data?.message ??
+          "Tekkis viga saatmisel. Kontrolli internetiühendust ja proovi uuesti."
+      );
+    } finally {
+      if (isMountedRef.current) setLoading(false);
     }
   }, [answers, navigate]);
 
@@ -132,8 +150,9 @@ export default function TestPage() {
 
   return (
     <>
+      {loading && <div className={styles.loadingOverlay}>Ootame teie tulemusi!</div>}
       <h1 className={styles.title}>Valimiskompassi test</h1>
-      <div className={styles.testPage}>
+      <div className={styles.testPage} aria-busy={loading}>
         <div className={styles.progress}>
           {answers.filter((a) => a !== null).length}/{QUESTIONS.length} väidet
         </div>
@@ -170,7 +189,6 @@ export default function TestPage() {
           {VARIANTS.map((label, i) => {
             const selected = selectedIndexForCurrent === i;
             const parts = label.split("/");
-
             const estonian = parts[0];
             const russian = parts[1];
             return (
@@ -179,10 +197,9 @@ export default function TestPage() {
                 type="button"
                 role="radio"
                 aria-checked={selected}
-                className={`${styles.variantBtn} ${
-                  selected ? styles.selected : ""
-                }`}
+                className={`${styles.variantBtn} ${selected ? styles.selected : ""}`}
                 onClick={() => handleVariantClick(i)}
+                disabled={loading}
               >
                 <p className={styles.estonian_choice}>{estonian}/</p>
                 <p className={styles.russian_choice}>{russian}</p>
@@ -195,7 +212,7 @@ export default function TestPage() {
           <button
             type="button"
             onClick={handlePrev}
-            disabled={currentQuestion === 0}
+            disabled={currentQuestion === 0 || loading}
             className={`${styles.btn} ${styles.prevBtn}`}
           >
             Tagasi
@@ -206,6 +223,8 @@ export default function TestPage() {
               type="button"
               onClick={handleSubmit}
               className={`${styles.btn} ${styles.kontrolli} ${styles.nextBtn}`}
+              disabled={loading}
+              aria-busy={loading}
             >
               Kontrolli
             </button>
@@ -215,7 +234,8 @@ export default function TestPage() {
               onClick={handleNext}
               disabled={
                 currentQuestion === QUESTIONS.length - 1 ||
-                answers[currentQuestion] === null
+                answers[currentQuestion] === null ||
+                loading
               }
               className={`${styles.btn} ${styles.nextBtn}`}
             >
