@@ -147,7 +147,11 @@
 .nextBtn {
   order: 1;
 }
-
+.loadingOverlay{
+  font-size: 30px;
+  text-align: center;
+  font-family: 'Poppins';
+}
 @media (max-width: 1080px) {
   .testPage {
     margin: 0 14%;
