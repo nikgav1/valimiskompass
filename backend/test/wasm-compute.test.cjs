@@ -36,3 +36,24 @@ test("compute_matches returns expected percentages for sample data", () => {
   assert.equal(result["202"].percent, 0);
   assert.equal(result["303"].percent, null);
 });
+
+test("compute_matches returns a realistic partial match percentage", () => {
+  const answers = [1, 0, -1, 0.5];
+  const politicians = [
+    {
+      party: "Mixed Party",
+      name: "Dana",
+      candidateNumber: "404",
+      positions: [0, 1, -1, 0],
+    },
+  ];
+
+  const raw = wasm.compute_matches(
+    JSON.stringify(answers),
+    JSON.stringify(politicians),
+    answers.length
+  );
+  const result = JSON.parse(raw);
+
+  assert.equal(result["404"].percent, 73.57);
+});

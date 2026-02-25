@@ -3,19 +3,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useState, useMemo } from "react";
 import axios from "axios";
 import styles from "./styles/ResultsPage.module.css";
-
-type PoliticianMatch = {
-  party: string;
-  name: string;
-  candidateNumber: string;
-  percent: number | null;
-};
-
-type ResultShape =
-  | PoliticianMatch[]
-  | Record<string, PoliticianMatch>
-  | null
-  | undefined;
+import {
+  type PoliticianMatch,
+  type ResultShape,
+  sortMatches,
+  toResultArray,
+} from "../utils/results";
 
 export default function ResultsPage() {
   const location = useLocation();
@@ -31,28 +24,14 @@ export default function ResultsPage() {
   const [isSaving, setIsSaving] = useState(false);
 
   const raw = (location.state as { result?: ResultShape } | null)?.result;
-  const resultArray: PoliticianMatch[] | undefined = Array.isArray(raw)
-    ? raw
-    : raw
-    ? Object.values(raw)
-    : undefined;
+  const resultArray: PoliticianMatch[] | undefined = toResultArray(raw);
 
   const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
 
-  const sorted = useMemo(() => {
-    if (!resultArray) return [];
-    return [...resultArray].sort((a, b) => {
-      const va =
-        typeof a.percent === "number" && Number.isFinite(a.percent)
-          ? a.percent
-          : -Infinity;
-      const vb =
-        typeof b.percent === "number" && Number.isFinite(b.percent)
-          ? b.percent
-          : -Infinity;
-      return sortOrder === "desc" ? vb - va : va - vb;
-    });
-  }, [resultArray, sortOrder]);
+  const sorted = useMemo(
+    () => (resultArray ? sortMatches(resultArray, sortOrder) : []),
+    [resultArray, sortOrder]
+  );
 
   if (!resultArray || resultArray.length === 0) {
     return (
