@@ -3,7 +3,8 @@ import { POLITICIANS_JSON } from "../server";
 import { checkJwt } from "../middlewares/auth";
 import User from "../models/User";
 import AlgorithmLog from "../models/Counter";
-// @ts-expect-error different path for Docker
+import { QUESTIONS } from "../data/questions";
+// @ts-ignore wasm pkg can be generated at build time and may be absent in local TS check
 import wasm from "../../wasm/pkg";
 
 type PoliticianMatch = {
@@ -24,11 +25,20 @@ apiRouter.post("/evaluate", async (req, res) => {
     if (!Array.isArray(answers)) {
       return res.status(400).json({ message: "answers must be an array" });
     }
+    if (answers.length !== QUESTIONS.length) {
+      return res.status(400).json({
+        message: `answers must contain exactly ${QUESTIONS.length} values`,
+      });
+    }
 
     // Call wasm function, It expects stringified JSON and returns stringified JSON
     const answersJson = JSON.stringify(answers);
 
-    const resultJson = wasm.compute_matches(answersJson, POLITICIANS_JSON, 15);
+    const resultJson = wasm.compute_matches(
+      answersJson,
+      POLITICIANS_JSON,
+      QUESTIONS.length
+    );
     const results = JSON.parse(resultJson);
     await AlgorithmLog.findOneAndUpdate(
       { name: "CosinePoliticianEvaluate" },
