@@ -1,18 +1,14 @@
-import config from "./config/config";
 import mongoose from "mongoose";
 import politicians from "../politicians.json";
 import app from "./app";
+import { env } from "./config/env";
 
 (async () => {
-  if (process.env.MONGODB_URI) {
-    await mongoose.connect(process.env.MONGODB_URI);
+  await mongoose.connect(env.mongodbUri);
 
-    app.listen(config.port, () => {
-      console.log(`Server running on port ${config.port}`);
-    });
-  } else {
-    process.exit(1)
-  }
+  app.listen(env.port, () => {
+    console.log(`Server running on port ${env.port}`);
+  });
 })();
 
 export const POLITICIANS_JSON = JSON.stringify(politicians);
