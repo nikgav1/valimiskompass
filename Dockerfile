@@ -11,10 +11,7 @@ WORKDIR /src/wasm
 RUN wasm-pack build --release --target nodejs
 
 # Stage 2: Base node image for workspace installs
-FROM node:20-bullseye-slim AS pnpm-base
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 make g++ ca-certificates \
-  && rm -rf /var/lib/apt/lists/*
+FROM node:20-slim AS pnpm-base
 RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
 
 WORKDIR /usr/src/app
@@ -22,7 +19,6 @@ WORKDIR /usr/src/app
 # Copy workspace manifests first for better Docker layer caching
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY backend/package.json ./backend/package.json
-COPY frontend/package.json ./frontend/package.json
 
 # Stage 3: Install backend deps for build (includes dev deps)
 FROM pnpm-base AS build-deps
