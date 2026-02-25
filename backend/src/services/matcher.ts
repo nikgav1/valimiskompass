@@ -5,41 +5,17 @@ export type PoliticianMatch = {
   percent: number | null;
 };
 
-/**
- * Record keyed by candidateNumber (if present) or name if candidateNumber is empty.
- * If duplicate keys exist, later entries overwrite earlier ones.
- */
+
 export type MatchResult = Record<string, PoliticianMatch>;
 
 export interface PoliticianJson {
   party?: string;
   name: string;
   candidateNumber?: string;
-  // positions can contain null for missing/unrecognized answers
+  // positions can contain null for missing unrecognized answers
   positions: Array<number | null>;
 }
 
-/**
- * Compute percent matches for all politicians from a JSON array.
- *
- * - `answers`:
- *     * Type: `number[]`
- *     * Length: equals `questionCount` if `options.questionCount` provided, otherwise `answers.length` is used.
- *     * Each value: finite number in the range [-1, 1]
- *
- * - `politicians`:
- *     * Array of { party?: string, name: string, candidateNumber?: string, positions: Array<number | null> }
- *     * Each positions array may contain nulls; those questions are ignored for that politician.
- *
- * - `options` (optional):
- *     * `questionCount?: number` — number of questions to consider (default: answers.length)
- *
- * Returns:
- *  - `MatchResult`: Record<key, { party, name, candidateNumber, percent | null }>
- *     * key = `candidateNumber` if non-empty, otherwise `name`
- *     * `percent` is a number in [0,100], rounded to 2 decimals.
- *     * `null` means invalid/missing data for that politician or no overlapping answers.
- */
 export function computeMatchesFromJson(
   answers: number[],
   politicians: PoliticianJson[],

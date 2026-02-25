@@ -25,7 +25,7 @@ apiRouter.post("/evaluate", async (req, res) => {
       return res.status(400).json({ message: "answers must be an array" });
     }
 
-    // call wasm function — it expects stringified JSON and returns stringified JSON
+    // Call wasm function, It expects stringified JSON and returns stringified JSON
     const answersJson = JSON.stringify(answers);
 
     const resultJson = wasm.compute_matches(answersJson, POLITICIANS_JSON, 15);
