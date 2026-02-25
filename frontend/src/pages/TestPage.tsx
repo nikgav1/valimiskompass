@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./styles/TestPage.module.css";
 import { useAuth0 } from "@auth0/auth0-react";
+import { mapIndexToValue, valueToIndex } from "../utils/answerScale";
 
 const VARIANTS = [
   "Ei nõustu üldse/ Полностью не согласен",
@@ -15,27 +16,6 @@ const VARIANTS = [
 type QuestionsResponse = {
   questions: string[];
 };
-
-function mapIndexToValue(index: number): number {
-  return [-1, -0.5, 0, 0.5, 1][index] ?? 0;
-}
-function valueToIndex(value: number | null): number | null {
-  if (value === null) return null;
-  switch (value) {
-    case -1:
-      return 0;
-    case -0.5:
-      return 1;
-    case 0:
-      return 2;
-    case 0.5:
-      return 3;
-    case 1:
-      return 4;
-    default:
-      return null;
-  }
-}
 
 export default function TestPage() {
   const navigate = useNavigate();

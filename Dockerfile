@@ -27,8 +27,11 @@ RUN pnpm install --frozen-lockfile --filter backend...
 # Stage 4: Build backend
 FROM build-deps AS builder
 COPY backend/ ./backend/
-# backend imports wasm from "../../wasm/pkg", so runtime path is backend/wasm/pkg
+# backend tests resolve "../../wasm/pkg" from backend/test -> /usr/src/app/wasm/pkg
+COPY --from=wasm-builder /src/wasm/pkg ./wasm/pkg
+# backend runtime imports "../../wasm/pkg" from dist/routes -> /usr/src/app/backend/wasm/pkg
 COPY --from=wasm-builder /src/wasm/pkg ./backend/wasm/pkg
+RUN pnpm --filter backend test
 RUN pnpm --filter backend build
 
 # Stage 5: Install backend production deps only

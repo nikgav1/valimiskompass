@@ -113,7 +113,7 @@ pub fn compute_matches(
         let percent = if !had_overlap {
             None
         } else {
-            let denom = (sum_u2.sqrt() * sum_p2.sqrt());
+            let denom = sum_u2.sqrt() * sum_p2.sqrt();
             if denom <= EPS {
                 None
             } else {

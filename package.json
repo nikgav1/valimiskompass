@@ -6,7 +6,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"cd backend && pnpm run dev\" \"cd frontend && pnpm run dev\"",
-    "build:wasm": "cd wasm && wasm-pack build --target nodejs --release"
+    "build:wasm": "cd wasm && wasm-pack build --target nodejs --release",
+    "test:backend": "pnpm --filter backend test",
+    "test:frontend": "pnpm --filter frontend test",
+    "test": "pnpm run test:backend && pnpm run test:frontend",
+    "test:predeploy": "pnpm run build:wasm && pnpm run test"
   },
   "keywords": [],
   "author": "",
