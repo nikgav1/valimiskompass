@@ -4,10 +4,12 @@
 The project is non-profit and independent, with a strong focus on transparency and privacy.
 
 ---
+## Link to site
 
-## Product GIFs
+[narva-valimiskompass.online](https://narva-valimiskompass.online/)
 
-Add your product demo GIFs below (replace paths with your real files):
+
+## Showcase
 
 ### 1. Questionnaire Flow
 ![Questionnaire Flow](./docs/gifs/questionnaire-flow.gif)
