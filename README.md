@@ -1,31 +1,46 @@
 # Narva Valimiskompass
 
-**Narva Valimiskompass** on veebirakendus, mis aitab Narva elanikel leida kohalike valimiste kandidaatide seast need, kelle seisukohad ühtivad kõige paremini kasutaja vastustega.
-Projekt on mittetulunduslik ja sõltumatu ning rõhutab läbipaistvust ja privaatsust.
+**Narva Valimiskompass** is a web application that helps Narva residents find local election candidates whose views match the user’s answers most closely.  
+The project is non-profit and independent, with a strong focus on transparency and privacy.
 
 ---
 
-## Projekti struktuur
+## Product GIFs
+
+Add your product demo GIFs below (replace paths with your real files):
+
+### 1. Questionnaire Flow
+![Questionnaire Flow](./docs/gifs/questionnaire-flow.gif)
+
+### 2. Results and Match Percentages
+![Results and Match Percentages](./docs/gifs/results-and-matches.gif)
+
+### 3. Share View
+![Candidate Profile and Share View](./docs/gifs/share.gif)
+
+---
+
+## Project Structure
 
 ### `backend/`
 
-Node.js / Express server, mis:
+Node.js / Express server that:
 
-* arvutab vastavuse protsendid,
-* salvestab tulemusi MongoDB andmebaasi,
-* pakub REST-API liideseid.
+* calculates match percentages,
+* stores results in MongoDB,
+* provides REST API endpoints.
 
 ### `frontend/`
 
-React + TypeScript kliendirakendus, mis:
+React + TypeScript client application that:
 
-* kuvab küsimused ja kandidaatide profiilid,
-* arvutab tulemusi reaalajas,
-* võimaldab tulemusi jagada.
+* displays questions and candidate profiles,
+* calculates results in real time,
+* allows users to share results.
 
 ### `wasm/`
 
-Rusti teek, mis kompileeritakse WebAssembly-ks.
-Sisaldab performantset funktsiooni kasutaja ja kandidaatide vastuste sarnasuse arvutamiseks.
+A Rust library compiled to WebAssembly.  
+Contains a performant function for calculating similarity between user and candidate answers.
 
 ---
